@@ -5,16 +5,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.azkfw.walter.AbstractThread;
+import org.azkfw.walter.SearchOption;
 
 public class CrawlerThread extends AbstractThread {
 
-	private File baseDir;
+	private SearchOption option;
 
 	private CrawlerEvent event;
 	private List<CrawlerListener> listeners;
 
-	public CrawlerThread(final File file) {
-		baseDir = file;
+	public CrawlerThread(final SearchOption option) {
+		this.option = option;
+
 		event = new CrawlerEvent(this);
 		listeners = new ArrayList<CrawlerListener>();
 	}
@@ -26,10 +28,11 @@ public class CrawlerThread extends AbstractThread {
 	}
 
 	protected void doTask() {
-		if (baseDir.isDirectory()) {
-			dir(baseDir);
+		File dir = new File(option.getTargetDirectory());
+		if (dir.isDirectory()) {
+			dir(dir);
 		} else {
-			file(baseDir);
+			file(dir);
 		}
 	}
 
@@ -52,11 +55,21 @@ public class CrawlerThread extends AbstractThread {
 			for (CrawlerListener listener : listeners) {
 				listener.findFile(file, event);
 			}
+			// TODO:
+			if (true) {
+				for (CrawlerListener listener : listeners) {
+					listener.findIncludeFile(file, event);
+				}
+			} else {
+				for (CrawlerListener listener : listeners) {
+					listener.findExcludeFile(file, event);
+				}				
+			}
 		}
 	}
 
 	private boolean enable(final File file) {
-		if (".svn".equals(file.getName())) {
+		if (file.getName().startsWith(".")) {
 			return false;
 		}
 		return true;

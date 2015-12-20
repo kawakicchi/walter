@@ -1,1 +1,26 @@
-/target/
+*.class
+
+# Test temporary
+/tmp
+
+# Eclipse 
+/.settings
+.project
+.classpath
+
+# Mac System Files #
+.DS_Store
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Maven temporary
+/target
+
+# Package Files #
+*.jar
+*.war
+*.ear
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*

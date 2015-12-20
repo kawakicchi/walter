@@ -8,19 +8,26 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.azkfw.walter.AbstractThread;
 import org.azkfw.walter.SearchFileInfo;
+import org.azkfw.walter.SearchOption;
 import org.azkfw.walter.util.DetectUtils;
 
 public class SearcherThread extends AbstractThread {
 
+	private SearchOption option;
+	
 	private SearcherEvent event;
 	private List<SearcherListener> listeners;
 
 	private Queue<SearchFileInfo> files;
 
-	public SearcherThread() {
+	public SearcherThread(final SearchOption option) {
+		this.option = option;
+		
 		event = new SearcherEvent(this);
 		listeners = new ArrayList<SearcherListener>();
 		files = new LinkedList<SearchFileInfo>();
@@ -68,7 +75,6 @@ public class SearcherThread extends AbstractThread {
 				search(file);
 			}
 		}
-		System.out.println("END2");
 	}
 
 	private void search(final SearchFileInfo file) {
@@ -80,13 +86,22 @@ public class SearcherThread extends AbstractThread {
 			
 			file.setEncoding(encoding);
 			
-			// TODO: search
 			String data = readString(file.getFile(), encoding);
+			data = data.replaceAll("\r\n", "\n");
 			file.setData(data);
-
+			
+			
+			Pattern ptn = Pattern.compile(option.getKeyword());
+			Matcher m = ptn.matcher(data);
+			
+			SearchResult result = new SearchResult(file);
+			while (m.find()) {
+				result.addPosition(m.start(), m.end());
+			}
+			
 			synchronized (listeners) {
 				for (SearcherListener listener : listeners) {
-					listener.searchResult(file, event);
+					listener.searchResult(result, event);
 				}
 			}
 		} catch (Exception ex) {
@@ -96,7 +111,6 @@ public class SearcherThread extends AbstractThread {
 
 	private String readString(final File file, final String encoding) {
 		String string = null;
-
 		InputStreamReader reader = null;
 		try {
 			StringBuffer str = new StringBuffer();

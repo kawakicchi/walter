@@ -7,6 +7,6 @@ public interface SearcherListener {
 
 	public SearchFileInfo getFile(final SearcherEvent event);
 	
-	public void searchResult(final SearchFileInfo info, final SearcherEvent event);
+	public void searchResult(final SearchResult result, final SearcherEvent event);
 	
 }
