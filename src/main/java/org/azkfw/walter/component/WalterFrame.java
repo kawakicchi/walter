@@ -48,7 +48,8 @@ public class WalterFrame extends JFrame {
 	private JSplitPane pnl2;
 	private SearchPanel searchPanel;
 	private FileTreePanel fileTreePanel;
-	private ViewerPanel viewerPanel;
+	
+	private ViewerTabbedPanel viewerTabPanel;
 
 	private int searchFileCount;
 
@@ -58,7 +59,7 @@ public class WalterFrame extends JFrame {
 		setLayout(null);
 
 		searchPanel = new SearchPanel();
-		viewerPanel = new ViewerPanel();
+		viewerTabPanel = new ViewerTabbedPanel();
 		fileTreePanel = new FileTreePanel();
 		statusBar = new StatusBar();
 
@@ -68,7 +69,7 @@ public class WalterFrame extends JFrame {
 		pnl2.setBottomComponent(fileTreePanel);
 		pnl2.setDividerLocation(240);
 		pnl1.setLeftComponent(pnl2);
-		pnl1.setRightComponent(viewerPanel);
+		pnl1.setRightComponent(viewerTabPanel);
 		pnl1.setDividerLocation(320);
 
 		add(pnl1);
@@ -86,7 +87,7 @@ public class WalterFrame extends JFrame {
 						
 					}
 					public void end(WalterEngineEvent event) {
-						
+						statusBar.setMessage(String.format("%d 件見つかりました", searchFileCount));
 					}
 					public void findFile(SearchResult result, WalterEngineEvent event) {
 						doFindFile(option, result);
@@ -97,7 +98,11 @@ public class WalterFrame extends JFrame {
 		});
 		fileTreePanel.addFileTreePanelListener(new FileTreePanel.FileTreePanelListener() {
 			public void clickFile(final SearchResult result) {
+				ViewerPanel viewerPanel = new ViewerPanel();
 				viewerPanel.set(result);
+				
+				viewerTabPanel.add(result.getFileInfo().getFile().getName(), viewerPanel);
+				viewerTabPanel.setSelectedIndex( viewerTabPanel.getTabCount()-1 );
 			}
 		});
 
@@ -127,6 +132,6 @@ public class WalterFrame extends JFrame {
 		fileTreePanel.addPath(path, result);
 
 		searchFileCount++;
-		statusBar.setMessage(String.format("%d 件見つかりました", searchFileCount));
+		statusBar.setMessage(String.format("検索中・・・ %d 件見つかりました", searchFileCount));
 	}
 }

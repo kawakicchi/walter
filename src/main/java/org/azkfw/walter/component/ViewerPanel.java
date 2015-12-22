@@ -28,6 +28,7 @@ import java.awt.Rectangle;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 import javax.swing.JViewport;
+import javax.swing.UIDefaults;
 import javax.swing.plaf.TextUI;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultCaret;
@@ -57,14 +58,17 @@ public class ViewerPanel extends JScrollPane {
 	public ViewerPanel() {
 		text = new CustomTextPane();
 
-		text.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 14));
-		// text.setFont(new Font("MS Gothic", Font.PLAIN, 16));
+		//text.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 14));
+		text.setFont(new Font("MS Gothic", Font.PLAIN, 16));
 		text.setEditorKit(new MyEditorKit());
-
+		
+		text.setSelectionColor(Color.yellow);
+		
 		style = new DefaultStyledDocument();
 		text.setStyledDocument(style);
 
 		getViewport().setView(text);
+		getViewport().setBackground(Color.WHITE);
 		setRowHeaderView(new LineNumberView(text));
 		setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
@@ -79,6 +83,7 @@ public class ViewerPanel extends JScrollPane {
 		text.getHighlighter().removeAllHighlights();
 		try {
 			Highlighter highlighter = text.getHighlighter();
+			
 			Document doc = text.getDocument();
 			String text = doc.getText(0, doc.getLength());
 

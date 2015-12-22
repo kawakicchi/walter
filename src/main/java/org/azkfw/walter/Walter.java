@@ -17,17 +17,35 @@
  */
 package org.azkfw.walter;
 
+import java.io.File;
+
 import org.azkfw.walter.component.WalterFrame;
 
 /**
  * @author Kawakicchi
  *
  */
-public class Walter {
+public final class Walter {
 
 	public static void main(String[] args) throws Exception {
 		WalterFrame frame = new WalterFrame();
 		frame.setVisible(true);
 	}
+
+	private static final Walter INSTANCE = new Walter();
 	
+	private Walter() {
+		
+	}
+	
+	public static final Walter getInstance() {
+		return INSTANCE;
+	}
+	
+	public void load(final File file) {
+		
+	}
+	public void save(final File file) {
+		
+	}
 }

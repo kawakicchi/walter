@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -144,6 +145,9 @@ public class SearchPanel extends JPanel {
 	}
 	
 	public class DropFileHandler extends TransferHandler {
+
+		/** serialVersionUID */
+		private static final long serialVersionUID = 1885386084507241096L;
 
 		/**
 		 * ドロップされたものを受け取るか判断 (ファイルのときだけ受け取る)

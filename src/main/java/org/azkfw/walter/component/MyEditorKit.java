@@ -168,7 +168,8 @@ public class MyEditorKit extends StyledEditorKit {
 
 					g2.setStroke(dashed);
 					g2.drawLine(sx + 2, sy, sx + tabWidth - 2, sy);
-					sumOfTabs += tabWidth - 6; // TODO タブのカウントが
+					//sumOfTabs += tabWidth - 6; // TODO タブのカウントが mac
+					sumOfTabs += tabWidth; // TODO タブのカウントが win
 				}
 				
 				g2.setStroke(strokeBackup);
