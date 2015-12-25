@@ -31,14 +31,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.TransferHandler;
-import javax.swing.TransferHandler.TransferSupport;
 
 import org.azkfw.walter.SearchOption;
+import org.azkfw.walter.Walter;
 
 /**
  * @author Kawakicchi
@@ -76,7 +75,7 @@ public class SearchPanel extends JPanel {
 
 		lblDirectory = new JLabel("Target directory");
 		add(lblDirectory);
-		txtDirectory = new JTextField("/Users/Kawakicchi/git/walter");
+		txtDirectory = new JTextField(Walter.getTargetDirectory());
 		txtDirectory.setTransferHandler(new DropFileHandler());
 		add(txtDirectory);
 		btnDirectory = new JButton("参照");
@@ -136,6 +135,9 @@ public class SearchPanel extends JPanel {
 		SearchOption option = new SearchOption();
 		option.setKeyword(txtKeyword.getText());
 		option.setTargetDirectory(txtDirectory.getText());
+		
+		Walter.getInstance().setTargetDirectory(txtDirectory.getText());
+		Walter.getInstance().save();
 
 		synchronized (listeners) {
 			for (SearchPanelListener listener : listeners) {
@@ -181,6 +183,7 @@ public class SearchPanel extends JPanel {
 			Transferable t = support.getTransferable();
 			try {
 				// ファイルを受け取る
+				@SuppressWarnings("unchecked")
 				List<File> files = (List<File>) t.getTransferData(DataFlavor.javaFileListFlavor);
 
 				// テキストエリアに表示するファイル名リストを作成する

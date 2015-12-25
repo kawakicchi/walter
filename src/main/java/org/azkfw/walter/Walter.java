@@ -18,6 +18,12 @@
 package org.azkfw.walter;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Properties;
 
 import org.azkfw.walter.component.WalterFrame;
 
@@ -28,24 +34,89 @@ import org.azkfw.walter.component.WalterFrame;
 public final class Walter {
 
 	public static void main(String[] args) throws Exception {
+		Walter.getInstance().load(new File("setting.properties"));
+		
 		WalterFrame frame = new WalterFrame();
 		frame.setVisible(true);
 	}
 
 	private static final Walter INSTANCE = new Walter();
+
+	private File propertyFile;
+	private String keyword;
+	private String targetDirectory;
 	
 	private Walter() {
-		
+		keyword = "";
+		targetDirectory = "";
 	}
 	
 	public static final Walter getInstance() {
 		return INSTANCE;
 	}
 	
+	public static String getKeyword() {
+		return INSTANCE.keyword;
+	}
+	
+	public void setKeyword(final String keyword) {
+		this.keyword = keyword;
+	}
+	
+	public static String getTargetDirectory() {
+		return INSTANCE.targetDirectory;
+	}
+	
+	public void setTargetDirectory(final String directory) {
+		targetDirectory = directory;
+	}
+	
 	public void load(final File file) {
-		
+		propertyFile = file;
+		InputStream stream = null;
+		try {
+			stream = new FileInputStream(file);
+			Properties p = new Properties();
+			p.load(stream);
+			
+			keyword = p.getProperty("searchOption.keyword", "");
+			targetDirectory = p.getProperty("searchOption.targetDirectory", "");
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		} finally {
+			if (null != stream) {
+				try {
+				stream.close();
+				} catch (IOException ex) {
+					ex.printStackTrace();
+				}
+			}
+		}
+	}
+
+	public void save() {
+		save(propertyFile);
 	}
 	public void save(final File file) {
-		
+		OutputStream stream = null;
+		try {
+			stream = new FileOutputStream(file);
+			Properties p = new Properties();
+			
+			p.put("searchOption.keyword", keyword);
+			p.put("searchOption.targetDirectory", targetDirectory);
+			
+			p.store(stream, "Walter");
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		} finally {
+			if (null != stream) {
+				try {
+				stream.close();
+				} catch (IOException ex) {
+					ex.printStackTrace();
+				}
+			}
+		}
 	}
 }
